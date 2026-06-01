@@ -18,7 +18,7 @@ jobs:
             - name: Get Artifact
               uses: actions/upload-artifact@v7
               with:
-                - name: artifact-file
+                  name: artifact-file
                   path: file-artifact.txt
     
     Deploy:
@@ -27,7 +27,7 @@ jobs:
            - name: Download Artifact 
              uses: actions/download-artifact@8
              with:
-                name :artifact-file
+                name: artifact-file
            - name: show artifact
              run: ls -l 
-             
+
