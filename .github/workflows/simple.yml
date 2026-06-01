@@ -7,14 +7,19 @@ on:
             - 'dev-*'
 jobs:
     test:
+
         runs-on: ubuntu-latest
+        outputs:
+            var-f1: ${{ steps.f1.outputs.fl }}
         steps:
             - name: Get Code
               uses: actions/checkout@v6
             - name: show-Info
+              id: f1
               run: | 
                 echo "hello World!!"
                 echo "add some dumy artifact to file" > file-artifact.txt
+                find *.txt -type f -printf "fl=%f\n" >> ${GITHUB_OUTPUT}
             - name: Get Artifact
               uses: actions/upload-artifact@v7
               with:
@@ -30,5 +35,8 @@ jobs:
              with:
                 name: artifact-file
            - name: show artifact
-             run: ls -l 
+             run: |
+                ls -l 
+                echo ${{ needs.test.outputs.var-f1 }}
+                
 
