@@ -42,7 +42,7 @@ jobs:
               id: cache-id
               with:
                 path: ${{ steps.path-cache.outputs.dir }}
-                key: ${{ runner.os }}-node-${{ hashFile('**/package-lock.json') }}
+                key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
             - name: instal dep 
               if: steps.cache-id.outputs.cache-hit != 'true'
               run: npm ci 
