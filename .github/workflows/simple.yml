@@ -6,37 +6,63 @@ on:
             - 'feature/**'
             - 'dev-*'
 jobs:
-    test:
-
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get Code 
+              uses: actions/checkout@v6
+            - name: Get Cache Path
+              id: path-cache
+              run: echo "dir=node_modules" >> ${GITHUBOUTPUT}
+            - name: Cach Dep
+              uses: actions/cache@v5
+              id: cache-id
+              with:
+                path: ${{ steps.path-cache.outputs.dir }}
+                key: ${{ runner.os }}-node-${{ hashFile('**/package-lock.json') }}
+            - name: instal dep 
+              if: steps.cache-id.outputs.cache-hit != 'true'
+              run: npm ci             
+            - name: lint run
+              run: npm run lint 
+            - name: Test 
+              run: npm run test
+    build:
         runs-on: ubuntu-latest
         outputs:
-            var-f1: ${{ steps.f1.outputs.fl }}
+            var-ar: ${{ steps.ar-var.outputs.script-file }}
         steps:
-            - name: Get Code
+            - name: Get Code 
               uses: actions/checkout@v6
-            - name: show-Info
-              id: f1
-              run: | 
-                echo "hello World!!"
-                echo "add some dumy artifact to file" > file-artifact.txt
-                find *.txt -type f -printf "fl=%f\n" >> ${GITHUB_OUTPUT}
-            - name: Get Artifact
-              uses: actions/upload-artifact@v7
+            - name: Get Cache Path
+              id: path-cache
+              run: echo "dir=node_modules" >> ${GITHUBOUTPUT}
+            - name: Cach Dep
+              uses: actions/cache@v5
+              id: cache-id
               with:
-                  name: artifact-file
-                  path: file-artifact.txt
-    
-    Deploy:
-        needs: test
+                path: ${{ steps.path-cache.outputs.dir }}
+                key: ${{ runner.os }}-node-${{ hashFile('**/package-lock.json') }}
+            - name: instal dep 
+              if: steps.cache-id.outputs.cache-hit != 'true'
+              run: npm ci 
+            - name: build Project
+              run: npm build 
+            - name: Get Artifact File
+              id: ar-var
+              run: find dist/assets/*.js -type f -printf "script-file=%f\n" >> $GITHUB_OUTPUT            
+    deploy:
+        needs: build
         runs-on: ubuntu-latest
         steps:
-           - name: Download Artifact 
-             uses: actions/download-artifact@v8
-             with:
-                name: artifact-file
-           - name: show artifact
-             run: |
-                ls -l 
-                echo ${{ needs.test.outputs.var-f1 }}
-                
+            - name: deploy info 
+              run: |
+                echo "som deploy info ..."
+                ehco ${{ needs.build.outputs.var-ar }}
+    
+
+            
+
+
+
 
