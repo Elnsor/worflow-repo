@@ -47,7 +47,7 @@ jobs:
               if: steps.cache-id.outputs.cache-hit != 'true'
               run: npm ci 
             - name: build Project
-              run: npm build 
+              run: npm run build 
             - name: Get Artifact File
               id: ar-var
               run: find dist/assets/*.js -type f -printf "script-file=%f\n" >> $GITHUB_OUTPUT            
