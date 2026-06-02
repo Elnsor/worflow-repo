@@ -58,7 +58,7 @@ jobs:
             - name: deploy info 
               run: |
                 echo "som deploy info ..."
-                ehco ${{ needs.build.outputs.var-ar }}
+                echo ${{ needs.build.outputs.var-ar }}
     
 
             
